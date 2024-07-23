@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>METARPAS_FLIGHT_LOG</title>
+    <link rel="stylesheet" href="./flyingRecord.css">
+</head>
+<body>
+    <!-- 검색시에만 보이게끔 -->
+    <div class="head">
+        <div class="recordDetails headButton" style="display: none;">
+            <button class="icon-button" id="backButton" onclick="searchPlaceData()">
+                <img src="./back-icon.svg" alt="뒤로가기">
+            </button>
+        </div>
+
+        <div class="title">
+            <h1>비행기록부</h1>
+        </div>
+
+        <div class="recordDetails headButton" style="display: none;">
+            <button class="icon-button" id="homeButton" onclick="goHome()">
+                <img src="./home-icon.svg" alt="홈버튼">
+            </button>
+        </div>
+    </div>
+    <div >
+        <button class = "staion_button" onclick="findNearestStation()">
+            관측소 데이터 가져오기</button>
+        <span id="data_status"></span>
+        <p id="output"></p>
+    </div>
+    <div class="currnet_info">
+        <div class="autocomplete-container">
+        <input type="text" id="current_place" 
+            placeholder="장소를 입력하세요..." autocomplete="off">
+            <button id="search_button" onclick="searchPlaceData()">
+                검색
+            </button>
+        <ul id="place_list"></ul>
+        
+        </div>
+        <span id="current_date"></span>
+    </div>
+
+    <!-- 검색시에만 보이게끔 -->
+    <div class="recordDetails" style="display: none;">
+        <p id="record_place">기록 장소: <span id="place_display"></span></p>
+        <p id="record_time">기록 시간: <span id="time_display"></span></p>
+        <p id="record_location">기록 위치: <span id="location_display"></span></p>
+        <p id="record_station">기록 관측소: <span id="station_display"></span></p>
+    </div>
+    
+    <table class="main_table">
+        <tr class="table-title">
+            <th colspan="6">기록사항</th>
+        </tr>
+        <tr class="table-header">
+            <th>항목</th>
+            <th>기준</th>
+            <th>자동 측정</th>
+            <th>측정 시간</th>
+            <th>수기 측정</th>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">일사량</div>
+                <div class="unit">[W/m²]</div>
+            </td>
+            <td>최소 600</td>
+            <td class="auto_data" id="weather_data_SI"></td>
+            <td id="weather_data_kmaTime" rowspan="5"></td>
+            <td><input class="manual_data" type="number" step="1" id="irradiance-manual"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">온도</div>
+                <div class="unit">[°C]</div>
+            </td>
+            <td>-</td>
+            <td class="auto_data" id="weather_data_TA"></td>
+            <td><input class="manual_data" type="number" min="-99.9" max="99.9" step="0.1" id="temperature-manual"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">풍속</div>
+                <div class="unit">[m/s]</div>
+            </td>
+            <td>최대 5.45</td>
+            <td class="auto_data" id="weather_data_WS"></td>
+            <td><input class="manual_data" min="0" type="number" step="0.1" id="wind-speed-manual"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">구름 범위</div>
+                <div class="unit">[Okta]</div>
+            </td>
+            <td>최대 Okta2 (25%)</td>
+            <td class="auto_data" id="weather_data_CA"></td>
+            <td><input class="manual_data" type="number" step="1" min="0" max="8" id="cloud-cover-manual"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">습도</div>
+                <div class="unit">[%]</div>
+            </td>
+            <td>-</td>
+            <td class="auto_data" id="weather_data_HM"></td>
+            <td><input class="manual_data" type="number" step="0.1" min="0" max="100" id="humidity-manual"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">자기장</div>
+                <div class="unit">[kp]</div>
+            </td>
+            <td>4 이하</td>
+            <td class="auto_data" id="weather_data_KP"></td>
+            <td id="weather_data_noaaTime"></td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="item">PV오염도</div>
+                <div class="unit">[상중하]</div>
+            </td>
+            <td>오염정도</td>
+            <td>-</td>
+            <td>-</td>
+            <td>
+                <select class="manual_data" id="pv-contamination-manual">
+                    <option value=""></option>
+                    <option value="상">상</option>
+                    <option value="중">중</option>
+                    <option value="하">하</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <!-- <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>기상 정보 출처</h2>
+            <p>기상청 : <a href="https://apihub.kma.go.kr" target="_blank">https://apihub.kma.go.kr</a></p>
+            <p>기상청 API : <a href="https://apihub.kma.go.kr/api/typ01/url/kma_sfctm2.php?stn=[기상관측소]&authKey=[API키값]" target="_blank">API 링크</a></p>
+            <p>지상 관측 시간자료 (1시간 간격)</p>
+            <p>일사량 : 기상청 관측 단위 MJ/m2 >> W/m2로 변경</p>
+            <p>구름 범위 : 기상청 관측 범위 1/10 >> Okta 1/8로 변경</p>
+            <p>NOAA : <a href="https://www.swpc.noaa.gov/products/planetary-k-index" target="_blank">https://www.swpc.noaa.gov/products/planetary-k-index</a></p>
+            <p>NOAA API : <a href="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json" target="_blank">API 링크</a></p>
+            <p>자기장 관측 시간자료(3시간 간격)</p>
+            <p>참고사항</p>
+            <p>지구자기장 관측데이터 - 우주환경센터 : <a href="https://spaceweather.kasa.go.kr/obsenv3.do" target="_blank">https://spaceweather.kasa.go.kr/obsenv3.do</a></p>
+        </div>
+    </div> -->
+
+    <div id="saveButtonDiv">
+        <button id="saveButton" onclick="saveData()">
+            저장
+        </button>
+    </div>
+
+    <!-- 검색시에만 보이게끔 -->
+    <div class="recordDetails deleteButtonDiv" style="display: none;">
+        <button id="deleteButton" onclick="deleteRecord()">
+            <img src="./delete-icon.svg" alt="삭제">
+        </button>
+        <input type="hidden" id="recordId" value="">
+    </div>
+
+
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>검색 결과</h2>
+            <div id="searchResults"></div>
+        </div>
+    </div>
+
+
+    <script src="./flyingRecord.js"></script>
+</body>
+</html>

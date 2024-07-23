@@ -1,0 +1,384 @@
+/* 변수 정의 */
+:root {
+    --primary-color: #66b3ff; /* 연한 파란색 */
+    --primary-color-hover: #3399ff; /* 호버 시 색상 */
+    --border-color: #ccc; /* 경계선 색상 */
+}
+
+/* 전체본문 틀 */
+body {
+    margin: 0;
+    padding: 15px;
+    background-color: #f0f0f0;
+}
+
+/* 제목 */
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+/* 뒤로가기 버튼 */
+.headButton button img {
+    width: 55px; /* 원하는 너비 */
+    height: 45px; /* 원하는 높이 */
+}
+
+.title {
+    text-align: center;
+    margin: 5px;
+    flex: 1;
+}
+.title h1 {
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.headButton button {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 표 스타일 */
+.main_table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+.main_table th, .main_table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    width: 20%;
+
+}
+.table-title th {
+    background-color: #9e9e9e;
+    color: rgb(0, 0, 0);
+    font-size: 1.2em;
+    padding: 12px;
+    text-align: center; 
+}
+.table-header th {
+    background-color: #9e9e9e;
+    color: #333;
+    font-weight: bold;
+    text-align: center; 
+}
+
+.item, .unit {
+    display: inline-block;
+    text-align: center;
+}
+.item {
+    font-size: larger; /* 항목 글씨 크기 */
+}
+.unit {
+    font-size: small; /* 단위 글씨 크기 */
+}
+
+/* 수기 측정 */
+input[type="number"], select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 0;
+    text-align: center;
+    vertical-align: middle;
+    font-size: large;
+}
+
+/* 관측소 데이터 가져오기 */
+.staion_button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-left: 2px;
+    padding: 3px 8px;
+}
+.staion_button:hover {
+    background-color: var(--primary-color-hover);
+}
+p {
+    margin: 0;
+}
+#output {
+    margin-left: 2px;
+}
+
+/* 장소 입력 창 */
+.currnet_info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    width: 100%; 
+}
+.autocomplete-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+#current_place {
+    width: 160px;
+    padding: 10px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px 0 0 5px;
+}
+/* 검색버튼 */
+#search_button {
+    padding: 10px;
+    font-size: 13px;
+    border: 0px solid var(--border-color);
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+#search_button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+#place_list {
+    position: absolute;
+    z-index: 1000;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* 초기에는 숨김 상태 */
+    list-style-type: none; /* 목록의 온점 제거 */
+    padding-left: 0; /* 패딩 제거 */
+    margin-top: 3px;
+    padding-top: 0;
+}
+#place_list li {
+    padding: 5px;
+    cursor: pointer;
+    font-size: 12px; 
+}
+#place_list li:hover {
+    background-color: #f0f0f0;
+}
+
+/* 저장 버튼 */
+#saveButtonDiv{
+    display: flex;
+    justify-content: flex-end;
+    text-align: end; 
+    margin-top: 10px;
+}
+#saveButton {
+    padding: 10px 20px; 
+    background-color: var(--primary-color); 
+    color: white; 
+    border: none; 
+    border-radius: 5px;
+    cursor: pointer;
+}
+#saveButton:hover {
+    background-color: var(--primary-color-hover);
+}
+
+/* 삭제 버튼 */
+.deleteButtonDiv {
+    display: none; /* Keep it hidden by default */
+    position: absolute; /* Use absolute positioning for right alignment */
+    right: 0; /* Align to the right */
+    border: none; /* No border */
+}
+
+#deleteButton {
+    background-color: transparent; /* No background */
+    border: none; /* No border */
+}
+
+#deleteButton img {
+    width: 48px; /* 원하는 너비 */
+    height: 48px; /* 원하는 높이 */
+}
+
+/* 검색 결과 모달창 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 15px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+#searchResults table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#searchResults th, #searchResults td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#searchResults th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+#searchResults td {
+    text-align: center;
+}
+
+#searchResults button {
+    border: none;
+    background-color: transparent;
+    margin: 2px;
+    padding: 0;
+    cursor: pointer;
+}
+
+#searchResults button:hover {
+    transform: scale(1.2);
+}
+
+.modal-content h2 {
+    margin-bottom: 0;
+}
+
+
+
+/* 모바일 대응 */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 5px;
+    }
+
+    .recordDetails p {
+        font-size: x-small;
+    }
+
+    .title {
+        flex-direction: column;
+    }
+
+    .title h1 {
+        font-size: 1.5em;
+    }
+
+    .headButton button img{
+        width: 36px; /* 원하는 너비 */
+        height: 30px; /* 원하는 높이 */
+    }
+
+    .main_table th, .main_table td {
+        padding: 2px;
+        font-size: xx-small;  /* 표 항목 글씨 작게 */
+        text-align: center;
+        width: 20%;
+    }
+
+    .item {
+        font-size: x-small; /* 항목 글씨 크기 */
+    }
+    .unit {
+        font-size: xx-small; /* 단위 글씨 크기 */
+    }
+
+    input[type="number"], select {
+        padding: 4px 6px;
+        font-size: medium;
+    }
+
+    .staion_button {
+        padding: 2px 6px;
+    }
+    #data_status {
+        font-size: x-small;
+    }
+    #output {
+        font-size: x-small;
+    }
+
+    .currnet_info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #current_place {
+        width: 100%;
+        margin-top: 5px;
+    }
+    #search_button {
+        width: 40%;
+        margin-top: 5px;
+    }
+
+    #place_list li {
+        font-size: 10px;
+    }
+
+    #saveButton {
+        padding: 8px 16px;
+        font-size: small;
+    }
+
+    #deleteButton img {
+        width: 36px; /* 원하는 너비 */
+        height: 36px; /* 원하는 높이 */
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        margin: 20% auto;
+        padding: 15px;
+        box-sizing: border-box; /* 박스 크기를 포함하도록 설정 */
+    }
+
+    #searchResults th, #searchResults td {
+        padding: 2px;
+    }
+}
